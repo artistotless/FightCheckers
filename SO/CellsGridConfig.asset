@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76a27e5248aa3a9408e99bf0254e25d2, type: 3}
+  m_Name: CellsGridConfig
+  m_EditorClassIdentifier: 
+  gridSize: 8
+  cellPrefab: {fileID: 74713764459384303, guid: c2f82fb07ef181e4b96c59fdf5ef7bdf, type: 3}
+  figurePrefab: {fileID: 4023217070549547466, guid: da8754a2408fa72468be756142d1881f, type: 3}
+  whiteCell: {fileID: 2100000, guid: 59fb20c3bc0f14448877d85435bb809e, type: 2}
+  blackCell: {fileID: 2100000, guid: 12a1108b6706eb74089a97f313b72e41, type: 2}
+  whiteFigure: {fileID: 2100000, guid: 31468e9cf9bb6524686408c0a221ab13, type: 2}
+  blackFigure: {fileID: 2100000, guid: de3039f2077becb48a296e2350f6b9c1, type: 2}
