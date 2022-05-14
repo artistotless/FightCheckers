@@ -8,6 +8,7 @@ public class Figure : MonoBehaviour
     public bool isKing;
     public FigureColor color;
     public Material material;
+    public RMCharacterController chController;
 
     private Animator _personAnimator;
     [SerializeField] private SkinnedMeshRenderer _meshRenderer;
@@ -17,6 +18,7 @@ public class Figure : MonoBehaviour
     private void Awake()
     {
         _personAnimator = GetComponent<Animator>();
+        chController = GetComponent<RMCharacterController>();
         _meshRenderer = _meshRenderer == null ? GetComponent<SkinnedMeshRenderer>() : _meshRenderer;
         material = _meshRenderer.sharedMaterial;
     }

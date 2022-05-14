@@ -11,7 +11,6 @@ public class GoalsFinder : ICloneable
 
     public Board _board { get; private set; }
     public CombatRouter _router { get; private set; }
-    public List<Cell> _lastHighLightedCells { get; private set; }
     public GoalDirection[] _arrayDirections { get; private set; }
         = { GoalDirection.TopRight, GoalDirection.BottomLeft, GoalDirection.BottomRight, GoalDirection.TopLeft };
 
@@ -22,7 +21,6 @@ public class GoalsFinder : ICloneable
         StepCells = new List<Cell>();
         _board = board;
         _router = new CombatRouter();
-        _lastHighLightedCells = new List<Cell>();
     }
 
     public CombatRouter GetCombatRouter()
@@ -38,10 +36,9 @@ public class GoalsFinder : ICloneable
 
     public void HighlightGoals(bool enabled = true)
     {
-        List<Cell> targetCollection = !enabled ? _lastHighLightedCells : (CombatCells.Count > 0 ? CombatCells : StepCells);
+        List<Cell> targetCollection =  (CombatCells.Count > 0 ? CombatCells : StepCells);
         foreach (Cell cell in targetCollection)
             cell.Highlight(enabled);
-        _lastHighLightedCells = targetCollection;
     }
 
     public void Find(Cell selectedCell, bool isKing)
@@ -216,7 +213,6 @@ public class GoalsFinder : ICloneable
             CombatCells = new List<Cell>(this.CombatCells),
             StepCells = new List<Cell>(this.StepCells),
             hasGoals = this.hasGoals,
-            _lastHighLightedCells = new List<Cell>(this._lastHighLightedCells),
             _router = this._router,
             _board = this._board,
             _arrayDirections = this._arrayDirections

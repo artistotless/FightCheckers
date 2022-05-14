@@ -53,12 +53,9 @@ public class Game : MonoBehaviour
     internal bool Direction { get { return CurrentPlayer == Player.White ? false : true; } set { } }
     public Player CurrentPlayer = Player.White;
     public Player MyPlayer;
-    //internal Board board;
     public GameStatus Status;
     public PlayMode Mode;
 
-    private float fps;
-    private Rect _fpsCounterPos = new Rect(30, 10, 100, 30);
     private GameObject _endGamePanel;
     private Text winnerText;
 
@@ -78,6 +75,15 @@ public class Game : MonoBehaviour
         }
         return CurrentPlayer == MyPlayer;
     }
+
+    public void UpdateScore()
+    {
+        if (CurrentPlayer == Player.Black)
+            BlackScore++;
+        else
+            WhiteScore++;
+    }
+
     public void CheckWin()
     {
         int[] figuresCount = { 14, 14 };
@@ -100,12 +106,6 @@ public class Game : MonoBehaviour
 
     }
 
-    private void OnGUI()
-    {
-        fps = 1.0f / Time.deltaTime;
-        GUI.Label(_fpsCounterPos, fps.ToString());
-    }
-
     void Awake()
     {
         Application.targetFrameRate = 300;
@@ -120,8 +120,8 @@ public class Game : MonoBehaviour
     public void FixedUpdate()
     {
         SelectedCell = board.SelectedCell;
-        lastDiagonal = board.lastDiagonalMove.HasValue ? board.lastDiagonalMove.Value: lastDiagonal;
-        SelectedFigure = board.SelectedCell==null?null:board.SelectedCell.figure;
+        lastDiagonal = board.lastDiagonalMove.HasValue ? board.lastDiagonalMove.Value : lastDiagonal;
+        SelectedFigure = board.SelectedCell == null ? null : board.SelectedCell.figure;
     }
 
     public void Restart()
@@ -132,10 +132,9 @@ public class Game : MonoBehaviour
     void Start()
     {
         MouseEventService.Instance.cellClicked += SelectCell;
-     
+
 
         CellsGrid grid = new CellsGrid(gridConfig);
-        //board.Init(grid, this);
         board = new Board(grid, this);
         board.checkerMoveEvent += OnCheckerMoved;
 

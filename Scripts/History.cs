@@ -77,7 +77,6 @@ public class SwitchPlayerCommand : ICommand
 public class SelectSourceCellCommand : ICommand
 {
     private Board _board;
-    private BoardSnapshot _snapshot;
     private Cell _dataCell;
 
     public SelectSourceCellCommand(Board board, Cell cell)
@@ -88,10 +87,8 @@ public class SelectSourceCellCommand : ICommand
 
     public void Execute()
     {
-        _snapshot = _board.MakeSnapshot();
-
+        _board.HighlightGoals(false);
         if (!_board.CanCellBeSource(_dataCell)) return;
-
         _board.SelectedCell = _dataCell;
         _board.GoalsFinder.Find(_board.SelectedCell, _board.SelectedCell.figure.isKing);
         if (!_board.GoalsFinder.hasGoals) { _board.ResetSourceCell(); return; }
@@ -101,28 +98,71 @@ public class SelectSourceCellCommand : ICommand
 
     public void Undo()
     {
-        _board.ApplySnapshot(_snapshot);
-        _board.HighlightGoals(false);
+        _board.ResetSourceCell();
+        _board.GoalsFinder.ClearData();
+        Debug.Log("Select Undo");
     }
 }
 
 public class SelectTargetCellCommand : ICommand
 {
+    private Board _board;
+    private Game _game;
+    private Cell _dataCell;
+    private List<CombatCommand> _combatCommands = new List<CombatCommand>();
+    private MoveCommand _moveCommand;
+    private SelectSourceCellCommand _selectSourceCellCommand;
+    private SwitchPlayerCommand _switchPlayerCommand;
+
+    public SelectTargetCellCommand(Board board, Game game, Cell cell)
+    {
+        _board = board;
+        _game = game;
+        _dataCell = cell;
+    }
+
     public void Execute()
     {
-        throw new System.NotImplementedException();
+        if (!_board.CanCellBeTarget(_dataCell)) return;
+
+        MoveResult moveResult = _board.MakeMove(_board.SelectedCell, _dataCell, _combatCommands, _moveCommand);
+
+        if (moveResult == MoveResult.Prohibited) return;
+
+        _moveCommand?.Execute();
+        foreach (CombatCommand command in _combatCommands)
+            command.Execute();
+
+        _game.UpdateScore();
+        _game.CheckWin();
+
+        bool hasCombat = _board.HasCombat(_dataCell);
+        if (moveResult == MoveResult.Combat && !hasCombat || moveResult == MoveResult.Step)
+        {
+            _switchPlayerCommand = new SwitchPlayerCommand(_game);
+            _switchPlayerCommand.Execute();
+            return;
+        }
+        else if (moveResult == MoveResult.Combat && hasCombat)
+        {
+            _selectSourceCellCommand = new SelectSourceCellCommand(_board, _dataCell);
+            _selectSourceCellCommand.Execute();
+        }
     }
 
     public void Undo()
     {
-        throw new System.NotImplementedException();
+        _selectSourceCellCommand?.Undo();
+        _moveCommand?.Undo();
+        _switchPlayerCommand?.Undo();
+        foreach (CombatCommand command in _combatCommands)
+            command.Undo();
     }
 }
 
 public class MoveCommand : ICommand
 {
     private Board _board;
-    private BoardSnapshot _boardSnapshot;
     private Game _game;
     private Step _step;
     private SetKingCommand setKingCommand;
@@ -141,28 +181,22 @@ public class MoveCommand : ICommand
             setKingCommand = new SetKingCommand(_step.startCell.figure, true);
             setKingCommand.Execute();
         }
-
-        _step.startCell.figure.transform.DOMove(_step.endCell.transform.position, 0.4f);
+        _step.startCell.figure.chController.TryMoveToTarget(_step.endCell.transform.position);
         _step.endCell.SetFigure(_step.startCell.figure);
         _step.startCell.SetFigure(null);
         _board.checkerMoveEvent(_step.endCell);
-        _boardSnapshot = _board.MakeSnapshot();
         _board.lastDiagonalMove = _board.GetDiagonal(_step.startCell, _step.endCell);
         Debug.Log($"[ {_step.startCell.position.x} , {_step.startCell.position.y} ] -> [ {_step.endCell.position.x} , {_step.endCell.position.y} ] ");
     }
 
     public void Undo()
     {
-        if (setKingCommand != null)
-            setKingCommand.Undo();
-        _step.endCell.figure.transform.DOMove(_step.startCell.transform.position, 0.4f);
+
+        setKingCommand?.Undo();
         _step.startCell.SetFigure(_step.endCell.figure);
+        _step.startCell.figure.chController.TryMoveToTarget(_step.startCell.transform.position);
         _step.endCell.SetFigure(null);
         _board.checkerMoveEvent(_step.startCell);
-        _board.HighlightGoals(false);
-        _board.ApplySnapshot(_boardSnapshot);
-        //_board.SelectSourceCell(_boardSnapshot.GetData().Selected);
-        Debug.Log($"[ {_step.endCell.position.x} , {_step.endCell.position.y} ] -> [ {_step.startCell.position.x} , {_step.startCell.position.y} ] ");
     }
 }
 
@@ -204,47 +238,41 @@ public class CombatCommand : ICommand
         enemy.SetColor(_enemyFigureColor, _enemyMaterial);
         _dataCombat.enemyCell.SetFigure(enemy);
         _moveCommand.Undo();
+        Debug.Log("Combat Undo");
     }
 }
 
 public class History
 {
-    private ICommand[] _commands;
-    private Game _game;
-    private Board _board;
-    private int _currentIndex;
-    private int _commandsCount;
+    private List<ICommand> _commands;
+    private int _currentIndex = -1;
 
     public History(Game game, Board board)
     {
-        _commands = new ICommand[1024];
-        _game = game;
-        _board = board;
+        _commands = new List<ICommand>();
     }
 
     public void AddCommand(ICommand command, bool execute = false)
     {
         if (execute) command.Execute();
-        _commands[_currentIndex] = command;
+        if (_currentIndex < _commands.Count - 1)
+            _commands.RemoveRange(_currentIndex + 1, _commands.Count - _currentIndex - 1);
+        _commands.Add(command);
         _currentIndex++;
-        _commandsCount++;
-        Debug.Log($"_currentIndex = {_currentIndex}");
     }
 
     public void StepNext()
     {
-        if (_currentIndex == _commandsCount) return;
-        Debug.Log("StepNext()");
-        _commands[_currentIndex].Execute();
+        if (_currentIndex == _commands.Count - 1) return;
         _currentIndex++;
+        _commands[_currentIndex].Execute();
     }
 
     public void StepPrevious()
     {
-        if (_currentIndex == 0) return;
-        Debug.Log("StepPrevious()");
-        _currentIndex--;
+        if (_currentIndex < 0) return;
         _commands[_currentIndex].Undo();
+        _currentIndex--;
     }
 }
 

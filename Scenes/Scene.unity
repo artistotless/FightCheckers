@@ -275,7 +275,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: -6.91, y: -364.76, z: 2.78}
 --- !u!4 &483090183 stripped
 Transform:
@@ -347,7 +347,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &564672307
 MonoBehaviour:
@@ -407,7 +407,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: -22.268, y: -7.963, z: 12.502}
 --- !u!1 &874961952
 GameObject:
@@ -437,7 +437,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1061945434
 GameObject:
@@ -532,13 +532,18 @@ RectTransform:
   m_Children:
   - {fileID: 1113870356}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!4 &1084490847 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2039709498788078318, guid: 2b49e31ee8c8d7e43abf73f1f81432b4, type: 3}
+  m_PrefabInstance: {fileID: 1610453908}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1113870355
 GameObject:
   m_ObjectHideFlags: 0
@@ -806,7 +811,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100000, guid: d4a62d24394e94c32ae623e5edbc0584, type: 3}
       propertyPath: m_Name
-      value: asteroid (1)
+      value: asteroid
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: d4a62d24394e94c32ae623e5edbc0584, type: 3}
       propertyPath: m_RootOrder
@@ -933,7 +938,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 1084490847}
     m_Modifications:
     - target: {fileID: 153492, guid: 28c90598a2b8765468371486ca76a11e, type: 3}
       propertyPath: m_Name
@@ -941,47 +946,47 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 434338, guid: 28c90598a2b8765468371486ca76a11e, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 434338, guid: 28c90598a2b8765468371486ca76a11e, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.63237
+      value: 2.6617143
       objectReference: {fileID: 0}
     - target: {fileID: 434338, guid: 28c90598a2b8765468371486ca76a11e, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.63237
+      value: 2.661714
       objectReference: {fileID: 0}
     - target: {fileID: 434338, guid: 28c90598a2b8765468371486ca76a11e, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.63237
+      value: 2.6617143
       objectReference: {fileID: 0}
     - target: {fileID: 434338, guid: 28c90598a2b8765468371486ca76a11e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.556
+      value: 5.4533563
       objectReference: {fileID: 0}
     - target: {fileID: 434338, guid: 28c90598a2b8765468371486ca76a11e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.197
+      value: -0.075687766
       objectReference: {fileID: 0}
     - target: {fileID: 434338, guid: 28c90598a2b8765468371486ca76a11e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -9.46
+      value: 6.079941
       objectReference: {fileID: 0}
     - target: {fileID: 434338, guid: 28c90598a2b8765468371486ca76a11e, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9709625
+      value: -0.8743527
       objectReference: {fileID: 0}
     - target: {fileID: 434338, guid: 28c90598a2b8765468371486ca76a11e, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.1786716
+      value: -0.07187772
       objectReference: {fileID: 0}
     - target: {fileID: 434338, guid: 28c90598a2b8765468371486ca76a11e, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.09229695
+      value: 0.47922733
       objectReference: {fileID: 0}
     - target: {fileID: 434338, guid: 28c90598a2b8765468371486ca76a11e, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.12957501
+      value: -0.026118636
       objectReference: {fileID: 0}
     - target: {fileID: 434338, guid: 28c90598a2b8765468371486ca76a11e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1066,7 +1071,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6293253135927416542, guid: 2b49e31ee8c8d7e43abf73f1f81432b4, type: 3}
       propertyPath: m_RootOrder
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6293253135927416542, guid: 2b49e31ee8c8d7e43abf73f1f81432b4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1468,7 +1473,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1808055587}
   m_Layer: 0
-  m_Name: GameObject (1)
+  m_Name: Island
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1524,7 +1529,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4151706c151b34840b84b69077894e9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lastDiagonal: {x: 0, y: 0}
+  SelectedCell: {fileID: 0}
+  SelectedFigure: {fileID: 0}
   gridConfig: {fileID: 11400000, guid: e766ad0337c5e1b4ca455602bf8cd3f7, type: 2}
+  CurrentPlayer: 0
+  MyPlayer: 0
+  Status: 0
+  Mode: 0
 --- !u!4 &1823098418
 Transform:
   m_ObjectHideFlags: 0
@@ -1537,7 +1549,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1870840597 stripped
 Transform:
@@ -1706,5 +1718,5 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 45, y: 130, z: 90}

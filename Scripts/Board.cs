@@ -19,7 +19,7 @@ public enum GoalDirection
     TopLeft,
 }
 
-public class Board : ISnapshotable<BoardSnapshot>
+public class Board
 {
     public Action<Cell> checkerMoveEvent;
     public Vector2? lastDiagonalMove = null;
@@ -30,7 +30,6 @@ public class Board : ISnapshotable<BoardSnapshot>
 
     private CellsGrid _grid;
     private Game _game;
-    private int _movedCount = 0;
 
     public Board(CellsGrid grid, Game game)
     {
@@ -107,57 +106,10 @@ public class Board : ISnapshotable<BoardSnapshot>
 
     public void SelectTargetCell(Cell targetCell)
     {
-        if (_game.Status != GameStatus.InProcess) return;
-        if (!Cell.isCorrectCell(targetCell) || targetCell.State == State.Prohibited) return;
-
-        if (_game.Mode == PlayMode.Game || _game.Mode == PlayMode.NetGame)
-            if (!_game.IsMyTurn()) return;
-
-        MoveResult moveResult = MakeMove(SelectedCell, targetCell);
-
-        ResetSourceCell();
-        if (moveResult == MoveResult.Prohibited) return;
-
-        // подсчёт очков
-        if (moveResult == MoveResult.Combat)
-        {
-            if (_game.CurrentPlayer == Player.Black)
-                _game.BlackScore++;
-            else
-                _game.WhiteScore++;
-        }
-        _game.CheckWin();
-        // считаем количество непрерывных ходов одной стороной
-        _movedCount++;
-
-        bool hasCombat = HasCombat(targetCell); // есть ли в этой позиции возможность боя
-                                                // запоминаем очередь хода перед возможной сменой
-                                                // или был бой и далее нет возможности боя
-        if (moveResult == MoveResult.Combat && !hasCombat ||
-            moveResult == MoveResult.Step)
-        {
-            // сообщаем о перемещении фишки
-            // сбрасываем количество непрерывных ходов одной стороной
-            _movedCount = 0;
-            // передача очерёдности хода
-
-            _game.history.AddCommand(new SwitchPlayerCommand(_game), true);
-
-            _game.CheckWin();
-            if (_game.Status == GameStatus.NotStarted)
-                CheckAvailableGoals();
-            return;
-        }
-        else if (moveResult == MoveResult.Combat && hasCombat)
-        {
-            // выбрана фишка для продолжения боя
-            SelectSourceCell(targetCell);
-        }
-
-        // сообщаем о перемещении фишки
+        _game.history.AddCommand(new SelectTargetCellCommand(this, _game, targetCell), true);     
     }
 
-    public MoveResult MakeMove(Cell startCell, Cell targetCell)
+    public MoveResult MakeMove(Cell startCell, Cell targetCell, List<CombatCommand> combatCommands, MoveCommand moveCommand)
     {
         MoveResult result = MoveResult.Prohibited;
         List<Combat> combats = GoalsFinder.GetCombatRouter().GetCombatsToCell(startCell, targetCell);
@@ -165,13 +117,14 @@ public class Board : ISnapshotable<BoardSnapshot>
         if (combats.Count > 0)
         {
             result = MoveResult.Combat;
+            combatCommands.Clear();
             foreach (Combat step in combats)
-                _game.history.AddCommand(new CombatCommand(step, this, _game), true);
+                combatCommands.Add(new CombatCommand(step, this, _game));
         }
         else if (GoalsFinder.StepCells.Contains(targetCell))
         {
-            _game.history.AddCommand(new MoveCommand(
-                new Step(startCell, targetCell, startCell.figure.isKing), this, _game), true);
+            moveCommand = new MoveCommand(
+            new Step(startCell, targetCell, startCell.figure.isKing), this, _game);
 
             result = combats.Count > 0 ? MoveResult.Combat : MoveResult.Step;
         }
@@ -206,7 +159,7 @@ public class Board : ISnapshotable<BoardSnapshot>
         return true;
     }
 
-    private bool CheckAvailableGoals()
+    public bool CheckAvailableGoals()
     {
         Player player = _game.MyPlayer;
         for (int y = 0; y < _grid.size; y++)
@@ -285,18 +238,5 @@ public class Board : ISnapshotable<BoardSnapshot>
           Math.Sign(endCell.position.y - startCell.position.y));
 
         return diagonal;
-    }
-
-    public BoardSnapshot MakeSnapshot()
-    {
-        return new BoardSnapshot(new BoardSnapshotData(GoalsFinder, lastDiagonalMove, SelectedCell));
-    }
-
-    public void ApplySnapshot(BoardSnapshot snapShot)
-    {
-        BoardSnapshotData data = snapShot.GetData();
-        GoalsFinder = data.goalsFinder;
-        lastDiagonalMove = data.lastDiagonalMove;
-        SelectedCell = data.Selected;
     }
 }

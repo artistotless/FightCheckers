@@ -12,6 +12,7 @@ public class RMCharacterController : MonoBehaviour
     private Transform _person;
     private Animator _personAnimator;
     private Vector3 _targetPosition;
+
     private const string _TURN_DIRECTION = "TurnDirection";
     private const string _SPEED = "Speed";
 
@@ -24,12 +25,11 @@ public class RMCharacterController : MonoBehaviour
     {
         _person = gameObject.transform;
         _personAnimator = _person.GetComponent<Animator>();
-        MouseEventService.Instance.mapClicked += OnMapClicked;
     }
 
-    private void OnMapClicked(Vector3 point)
+    public void TryMoveToTarget(Vector3 targetPosition, UnityAction callback = null)
     {
-        StartCoroutine(MoveToTarget(point));
+        StartCoroutine(MoveToTarget(targetPosition, callback));
     }
 
     public IEnumerator MoveToTarget(Vector3 targetPosition, UnityAction callback = null)
@@ -101,11 +101,6 @@ public class RMCharacterController : MonoBehaviour
     {
         Gizmos.color = color;
         Gizmos.DrawSphere(center, radius);
-    }
-
-    private void OnDestroy()
-    {
-        MouseEventService.Instance.mapClicked -= OnMapClicked;
     }
 }
 
